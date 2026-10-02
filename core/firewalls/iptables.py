@@ -25,3 +25,48 @@ def default_accept():
     os.system('iptables -P INPUT ACCEPT')
     os.system('iptables -P OUTPUT ACCEPT')
     os.system('iptables -P FORWARD ACCEPT')
+
+def intercept_tcp(bridge_iface, source_ip, destination_ip, port_spec, listen_ip):
+
+    rule = [
+        'iptables',
+        '-t', 'nat',
+        '-A', 'PREROUTING',
+        '-i', bridge_iface,
+    ]
+
+    if source_ip:
+        rule.extend([
+            '-s', source_ip,
+        ])
+
+    rule.extend([
+        '-d', destination_ip,
+        '-p', 'tcp',
+        '--dport', port_spec,
+        '-j', 'DNAT',
+        '--to-destination', listen_ip,
+    ])
+
+    os.system(' '.join(rule))
+
+def remove_intercept_tcp(bridge_iface, source_ip, destination_ip, port_spec, listen_ip, listen_port):
+
+    os.system(
+        'iptables -t nat -D PREROUTING '
+        '-i %s '
+        '-s %s '
+        '-d %s '
+        '-p tcp '
+        '--dport %s '
+        '-j DNAT '
+        '--to-destination %s:%d'
+        % (
+            bridge_iface,
+            source_ip,
+            destination_ip,
+            port_spec,
+            listen_ip,
+            listen_port
+        )
+    )

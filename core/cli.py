@@ -72,6 +72,11 @@ def options():
                         action='store_true',
                         help='Manually control mechanical splitters if hardware bypass is supported (use in conjunction with --upstream-splitter and --phy-splitter flags).')
 
+    modes_group_.add_argument('--tcp-intercept',
+                        dest='tcp_intercept',
+                        action='store_true',
+                        help='Redirect selected bridged TCP traffic to a local service.')
+
 # ------------------------------------------------------------------
 
     spoofing_params = parser.add_argument_group('Spoofing Params')
@@ -135,6 +140,41 @@ def options():
                         dest='phy',
                         type=str,
                         help='Downstream network interface.')
+
+# ------------------------------------------------------------------
+    tcp_intercept_group = parser.add_argument_group(
+        'TCP Intercept'
+    )
+
+    tcp_intercept_group.add_argument(
+        '--intercept-source-ip',
+        dest='intercept_source_ip',
+        type=str,
+        required=False,
+        default=None,
+        help='Optional source IP to intercept. If omitted, traffic from any source is matched.'
+    )
+
+    tcp_intercept_group.add_argument(
+        '--intercept-destination-ip',
+        dest='intercept_destination_ip',
+        type=str,
+        help='Destination IPv4 address to match.'
+    )
+
+    tcp_intercept_group.add_argument(
+        '--intercept-port',
+        dest='intercept_port',
+        type=str,
+        help='TCP destination port or range, e.g. 443 or 8000-8100.'
+    )
+
+    tcp_intercept_group.add_argument(
+        '--intercept-listen-ip',
+        dest='intercept_listen_ip',
+        type=str,
+        help='IP address already assigned to SilentBridge where the service listens.'
+    )
 
 # ------------------------------------------------------------------
 
@@ -246,6 +286,23 @@ def options():
         args.upstream_splitter is None,
         args.phy_splitter is None,
     ])
+
+    missing_nec_params = any([
+        args.intercept_source_ip is None,
+        args.intercept_destination_ip is None,
+        args.intercept_port is None,
+        args.intercept_listen_ip is None,
+    ])
+
+    if args.tcp_intercept and missing_nec_params:
+        parser.error(
+            '--tcp-intercept requires '
+            '--intercept-source-ip, '
+            '--intercept-destination-ip, '
+            '--intercept-port, and '
+            '--intercept-listen-ip'
+        )
+
     if args.splitterctl and missing_nec_params:
         parser.error("--splitterctl requires the --upstream-splitter and --phy-splitter flags")
 
@@ -263,6 +320,7 @@ def options():
         args.discovery,
         args.splitterctl,
         args.add_interaction,
+        args.tcp_intercept,
     ])
     if no_mode_selected:
         parser.error('You must select a valid mode.')

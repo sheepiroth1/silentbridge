@@ -142,6 +142,46 @@ def create_transparent_bridge(configs, options):
     core.utils.ethtool.reset_link(upstream)
     core.utils.ethtool.reset_link(phy)
 
+def tcp_intercept(configs, options):
+
+    bridge_iface = options['bridge']
+
+    source_ip = options['intercept_source_ip']
+    destination_ip = options['intercept_destination_ip']
+    port_spec = normalize_tcp_port_spec(
+        options['intercept_port']
+    )
+    listen_ip = options['intercept_listen_ip']
+
+    print '[*] TCP interception mode'
+    print '[*] Bridge: %s' % bridge_iface
+    print '[*] Source: %s' % source_ip
+    print '[*] Destination: %s' % destination_ip
+    print '[*] TCP port: %s' % port_spec
+    print '[*] Local service: %s' % listen_ip
+
+    print '[*] Loading br_netfilter...'
+
+    os.system('modprobe br_netfilter')
+
+    print '[*] Enabling bridge netfilter for IPv4...'
+
+    os.system(
+        'sysctl -w net.bridge.bridge-nf-call-iptables=1'
+    )
+
+    print '[*] Installing TCP interception rule...'
+
+    core.firewalls.iptables.intercept_tcp(
+        bridge_iface,
+        source_ip,
+        destination_ip,
+        port_spec,
+        listen_ip
+    )
+
+    print '[*] TCP interception active.'
+
 def add_interaction(configs, options):
     ''' adds interaction to transparent bridge '''
 
@@ -464,6 +504,35 @@ def discovery(configs, options):
 
         os.system('ifconfig %s down' % phy)
 
+def normalize_tcp_port_spec(port_spec):
+
+    if '-' in port_spec:
+        parts = port_spec.split('-')
+
+        if len(parts) != 2:
+            raise ValueError(
+                'Invalid port range: %s' % port_spec
+            )
+
+        start = int(parts[0])
+        end = int(parts[1])
+
+        if start < 1 or end > 65535 or start > end:
+            raise ValueError(
+                'Invalid port range: %s' % port_spec
+            )
+
+        return '%d:%d' % (start, end)
+
+    port = int(port_spec)
+
+    if port < 1 or port > 65535:
+        raise ValueError(
+            'Invalid TCP port: %s' % port_spec
+        )
+
+    return str(port)
+
 if __name__ == '__main__':
 
     print core.utils.banner.randz0rzlulz()
@@ -481,6 +550,8 @@ if __name__ == '__main__':
 
     if options['create_bridge']:
         create_transparent_bridge(core_conf, options)
+    elif options['tcp_intercept']:
+        tcp_intercept(core_conf, options)
     elif options['add_interaction']:
         add_interaction(core_conf, options)
     elif options['destroy_bridge']:
