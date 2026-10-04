@@ -72,8 +72,8 @@ def options():
                         action='store_true',
                         help='Manually control mechanical splitters if hardware bypass is supported (use in conjunction with --upstream-splitter and --phy-splitter flags).')
 
-    modes_group_.add_argument('--tcp-intercept',
-                        dest='tcp_intercept',
+    modes_group_.add_argument('--create-tcp-intercept',
+                        dest='creat_tcp_intercept',
                         action='store_true',
                         help='Redirect selected bridged TCP traffic to a local service.')
 
@@ -142,11 +142,11 @@ def options():
                         help='Downstream network interface.')
 
 # ------------------------------------------------------------------
-    tcp_intercept_group = parser.add_argument_group(
+    create_tcp_intercept_group = parser.add_argument_group(
         'TCP Intercept'
     )
 
-    tcp_intercept_group.add_argument(
+    create_tcp_intercept_group.add_argument(
         '--source-ip',
         dest='source_ip',
         type=str,
@@ -154,14 +154,14 @@ def options():
         help='Source IP to intercept. If omitted, traffic from any source is matched.'
     )
 
-    tcp_intercept_group.add_argument(
+    create_tcp_intercept_group.add_argument(
         '--destination-ip',
         dest='destination_ip',
         type=str,
         help='Destination IPv4 address to match.'
     )
 
-    tcp_intercept_group.add_argument(
+    create_tcp_intercept_group.add_argument(
         '--destination-port',
         dest='destination_port',
         type=str,
@@ -169,7 +169,7 @@ def options():
         help='TCP destination port or range, e.g. 443 or 8000-8100.'
     )
 
-    tcp_intercept_group.add_argument(
+    create_tcp_intercept_group.add_argument(
         '--listen-ip',
         dest='listen_ip',
         type=str,
@@ -292,8 +292,8 @@ def options():
         args.destination_ip is None,
     ])
 
-    if args.tcp_intercept and missing_nec_params:
-        parser.error('--tcp-intercept requires --destination-ip')
+    if args.create_tcp_intercept and missing_nec_params:
+        parser.error('--create-tcp-intercept requires --destination-ip')
 
     if args.splitterctl and missing_nec_params:
         parser.error("--splitterctl requires the --upstream-splitter and --phy-splitter flags")
@@ -312,7 +312,7 @@ def options():
         args.discovery,
         args.splitterctl,
         args.add_interaction,
-        args.tcp_intercept,
+        args.create_tcp_intercept,
     ])
     if no_mode_selected:
         parser.error('You must select a valid mode.')

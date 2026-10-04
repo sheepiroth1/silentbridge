@@ -144,7 +144,7 @@ def create_transparent_bridge(configs, options):
     core.utils.ethtool.reset_link(upstream)
     core.utils.ethtool.reset_link(phy)
 
-def tcp_intercept(configs, options):
+def create_tcp_intercept(configs, options):
 
     bridge_iface = options['bridge']
 
@@ -567,8 +567,8 @@ if __name__ == '__main__':
 
     if options['create_bridge']:
         create_transparent_bridge(core_conf, options)
-    elif options['tcp_intercept']:
-        tcp_intercept(core_conf, options)
+    elif options['create_tcp_intercept']:
+        create_tcp_intercept(core_conf, options)
     elif options['add_interaction']:
         add_interaction(core_conf, options)
     elif options['destroy_bridge']:
