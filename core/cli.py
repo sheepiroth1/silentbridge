@@ -165,6 +165,7 @@ def options():
         '--destination-port',
         dest='destination_port',
         type=str,
+        default=None,
         help='TCP destination port or range, e.g. 443 or 8000-8100.'
     )
 
@@ -172,6 +173,7 @@ def options():
         '--listen-ip',
         dest='listen_ip',
         type=str,
+        default=None,
         help='IP address used by the service'
     )
 
