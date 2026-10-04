@@ -73,7 +73,7 @@ def options():
                         help='Manually control mechanical splitters if hardware bypass is supported (use in conjunction with --upstream-splitter and --phy-splitter flags).')
 
     modes_group_.add_argument('--create-tcp-intercept',
-                        dest='creat_tcp_intercept',
+                        dest='create_tcp_intercept',
                         action='store_true',
                         help='Redirect selected bridged TCP traffic to a local service.')
 
