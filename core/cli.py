@@ -150,7 +150,6 @@ def options():
         '--source-ip',
         dest='source_ip',
         type=str,
-        required=False,
         default=None,
         help='Source IP to intercept. If omitted, traffic from any source is matched.'
     )
@@ -159,7 +158,6 @@ def options():
         '--destination-ip',
         dest='destination_ip',
         type=str,
-        required=True,
         help='Destination IPv4 address to match.'
     )
 
@@ -167,7 +165,6 @@ def options():
         '--destination-port',
         dest='destination_port',
         type=str,
-        required=False,
         help='TCP destination port or range, e.g. 443 or 8000-8100.'
     )
 
@@ -175,7 +172,6 @@ def options():
         '--listen-ip',
         dest='listen_ip',
         type=str,
-        required=False,
         help='IP address used by the service'
     )
 

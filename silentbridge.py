@@ -18,6 +18,8 @@ import settings.paths
 from core.hostapd import Hostapd
 from core.cert_manager import cert_manager
 
+DEFAULT_BRIDGE_IP='169.254.66.66'
+
 def splitter_control(configs, options):
     ''' manual control of A/B splitters '''
 
@@ -148,19 +150,32 @@ def tcp_intercept(configs, options):
 
     source_ip = options['source_ip']
     destination_ip = options['destination_ip']
-    port_spec = normalize_tcp_port_spec(
-        options['destination_port']
-    )
+    
+    port_spec = None
+    if options['destination_port']:
+        port_spec = normalize_tcp_port_spec(
+            options['destination_port']
+        )
+
     listen_ip = options['listen_ip']
+    if not listen_ip:
+        listen_ip = DEFAULT_BRIDGE_IP
 
     print '[*] TCP interception mode'
     if source_ip:
         print '[*] Source IP: %s' % source_ip
     else:
-        print '[*] Source: any'
+        print '[*] Source IP: any'
+
     print '[*] Destination IP: %s' % destination_ip
-    print '[*] Destination Port: %s' % port_spec
-    print '[*] Listen IP: %s' % listen_ip
+    if port_spec:
+        print '[*] Destination Port: %s' % port_spec
+    else:
+        print '[*] Destination Port any'
+    if listen_ip:
+        print '[*] Listen IP: %s' % listen_ip
+    else:
+        print '[*] Listen IP: %s' % DEFAULT_BRIDGE_IP
 
     print '[*] Loading br_netfilter...'
 
@@ -218,7 +233,7 @@ def add_interaction(configs, options):
 
     print '[*] Bringing the bridge up...'
 
-    bridge.up('169.254.66.66')
+    bridge.up(DEFAULT_BRIDGE_IP)
 
     time.sleep(3)
 
@@ -234,7 +249,7 @@ def add_interaction(configs, options):
     print '[*] Done.'
 
     print '[*] Establishing Layer 3 source nat'
-    core.firewalls.iptables.source_nat(bridge_iface, '169.254.66.66', client_ip)
+    core.firewalls.iptables.source_nat(bridge_iface, DEFAULT_BRIDGE_IP, client_ip)
     time.sleep(3)
 
     # go live
