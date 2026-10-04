@@ -149,19 +149,18 @@ def tcp_intercept(configs, options):
     source_ip = options['source_ip']
     destination_ip = options['destination_ip']
     port_spec = normalize_tcp_port_spec(
-        options['port']
+        options['destination_port']
     )
     listen_ip = options['listen_ip']
 
     print '[*] TCP interception mode'
     if source_ip:
-        print '[*] Source: %s' % source_ip
+        print '[*] Source IP: %s' % source_ip
     else:
         print '[*] Source: any'
-    print '[*] Source: %s' % source_ip
-    print '[*] Destination: %s' % destination_ip
-    print '[*] TCP port: %s' % port_spec
-    print '[*] Local service: %s' % listen_ip
+    print '[*] Destination IP: %s' % destination_ip
+    print '[*] Destination Port: %s' % port_spec
+    print '[*] Listen IP: %s' % listen_ip
 
     print '[*] Loading br_netfilter...'
 

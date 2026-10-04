@@ -164,8 +164,8 @@ def options():
     )
 
     tcp_intercept_group.add_argument(
-        '--port',
-        dest='port',
+        '--destination-port',
+        dest='destination_port',
         type=str,
         required=False,
         help='TCP destination port or range, e.g. 443 or 8000-8100.'
@@ -176,7 +176,7 @@ def options():
         dest='listen_ip',
         type=str,
         required=False,
-        help='IP address already assigned to SilentBridge where the service listens.'
+        help='IP address used by the service'
     )
 
 # ------------------------------------------------------------------
@@ -291,20 +291,11 @@ def options():
     ])
 
     missing_nec_params = any([
-        args.intercept_source_ip is None,
-        args.intercept_destination_ip is None,
-        args.intercept_port is None,
-        args.intercept_listen_ip is None,
+        args.destination_ip is None,
     ])
 
     if args.tcp_intercept and missing_nec_params:
-        parser.error(
-            '--tcp-intercept requires '
-            '--intercept-source-ip, '
-            '--intercept-destination-ip, '
-            '--intercept-port, and '
-            '--intercept-listen-ip'
-        )
+        parser.error('--tcp-intercept requires --destination-ip')
 
     if args.splitterctl and missing_nec_params:
         parser.error("--splitterctl requires the --upstream-splitter and --phy-splitter flags")
