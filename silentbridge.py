@@ -154,7 +154,10 @@ def tcp_intercept(configs, options):
     listen_ip = options['intercept_listen_ip']
 
     print '[*] TCP interception mode'
-    print '[*] Bridge: %s' % bridge_iface
+    if source_ip:
+        print '[*] Source: %s' % source_ip
+    else:
+        print '[*] Source: any'
     print '[*] Source: %s' % source_ip
     print '[*] Destination: %s' % destination_ip
     print '[*] TCP port: %s' % port_spec
