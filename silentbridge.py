@@ -189,7 +189,7 @@ def create_tcp_intercept(configs, options):
 
     print '[*] Installing TCP interception rule...'
 
-    core.firewalls.iptables.intercept_tcp(
+    core.firewalls.iptables.create_tcp_intercept(
         bridge_iface,
         source_ip,
         destination_ip,
