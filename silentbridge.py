@@ -171,7 +171,7 @@ def tcp_intercept(configs, options):
     if port_spec:
         print '[*] Destination Port: %s' % port_spec
     else:
-        print '[*] Destination Port any'
+        print '[*] Destination Port: any'
     if listen_ip:
         print '[*] Listen IP: %s' % listen_ip
     else:

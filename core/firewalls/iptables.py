@@ -26,7 +26,11 @@ def default_accept():
     os.system('iptables -P OUTPUT ACCEPT')
     os.system('iptables -P FORWARD ACCEPT')
 
-def intercept_tcp(bridge_iface, source_ip, destination_ip, port_spec, listen_ip):
+def intercept_tcp(bridge_iface, source_ip, destination_ip,
+                  port_spec=None, listen_ip=None):
+
+    if not listen_ip:
+        listen_ip = '169.254.66.66'
 
     rule = [
         'iptables',
@@ -43,7 +47,14 @@ def intercept_tcp(bridge_iface, source_ip, destination_ip, port_spec, listen_ip)
     rule.extend([
         '-d', destination_ip,
         '-p', 'tcp',
-        '--dport', port_spec,
+    ])
+
+    if port_spec:
+        rule.extend([
+            '--dport', port_spec,
+        ])
+
+    rule.extend([
         '-j', 'DNAT',
         '--to-destination', listen_ip,
     ])
