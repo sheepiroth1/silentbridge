@@ -146,12 +146,12 @@ def tcp_intercept(configs, options):
 
     bridge_iface = options['bridge']
 
-    source_ip = options['intercept_source_ip']
-    destination_ip = options['intercept_destination_ip']
+    source_ip = options['source_ip']
+    destination_ip = options['destination_ip']
     port_spec = normalize_tcp_port_spec(
-        options['intercept_port']
+        options['port']
     )
-    listen_ip = options['intercept_listen_ip']
+    listen_ip = options['listen_ip']
 
     print '[*] TCP interception mode'
     if source_ip:

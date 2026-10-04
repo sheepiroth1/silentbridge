@@ -147,32 +147,35 @@ def options():
     )
 
     tcp_intercept_group.add_argument(
-        '--intercept-source-ip',
-        dest='intercept_source_ip',
+        '--source-ip',
+        dest='source_ip',
         type=str,
         required=False,
         default=None,
-        help='Optional source IP to intercept. If omitted, traffic from any source is matched.'
+        help='Source IP to intercept. If omitted, traffic from any source is matched.'
     )
 
     tcp_intercept_group.add_argument(
-        '--intercept-destination-ip',
-        dest='intercept_destination_ip',
+        '--destination-ip',
+        dest='destination_ip',
         type=str,
+        required=True,
         help='Destination IPv4 address to match.'
     )
 
     tcp_intercept_group.add_argument(
-        '--intercept-port',
-        dest='intercept_port',
+        '--port',
+        dest='port',
         type=str,
+        required=False,
         help='TCP destination port or range, e.g. 443 or 8000-8100.'
     )
 
     tcp_intercept_group.add_argument(
-        '--intercept-listen-ip',
-        dest='intercept_listen_ip',
+        '--listen-ip',
+        dest='listen_ip',
         type=str,
+        required=False,
         help='IP address already assigned to SilentBridge where the service listens.'
     )
 
